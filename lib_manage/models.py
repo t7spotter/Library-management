@@ -8,3 +8,16 @@ class Person(models.Model):
     
     def __str__(self):
         return self.name
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=256)
+    author = models.CharField(max_length=128)
+    isbn = models.CharField(max_length=13)
+    publishel = models.CharField(max_length=128)
+    description = models.TextField(null=True, blank=True)
+    number_of_available = models.IntegerField(default=1)
+    
+    def __str__(self):
+        return f"{self.title} {self.number_of_available}"
+    
