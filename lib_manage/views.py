@@ -113,3 +113,9 @@ class BorrowBook(APIView):
                 book.number_of_available -= 1
                 borrowed_book.save()
                 return Response({"message" : "Book borrowed successfully"}, status=status.HTTP_200_OK)
+            
+    def get(self, requset: Request):
+        query = BorrowedBook.objects.all()
+        ser = BorrowedBookSerializers(query, many=True)
+        return Response(ser.data, status=status.HTTP_200_OK)
+    
