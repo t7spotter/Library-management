@@ -37,3 +37,10 @@ class BorrowedBook(models.Model):
     def __str__(self):
         return f"{self.person} borrowed {self.book}"
     
+    def calculate_penalty(self):
+        if self.must_return_date.date() < timezone.now().date():
+            days_diff = (timezone.now().date() - self.must_return_date.date()).days
+            penalty_amount = days_diff * 1 # '1' is amount of penalty per day.
+            self.person.balance -= penalty_amount
+            self.person.save()
+    
