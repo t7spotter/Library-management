@@ -26,3 +26,14 @@ class GetPostPerson(APIView):
             return Response(ser.data, status=status.HTTP_201_CREATED)
         else:
             return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request: Request, pk):
+        try:
+            query = Person.objects.get(pk=pk)
+        except Person.DoesNotExist:
+            return Response({"message" : "Can not find this person"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            query.delete()
+            return Response({"message" : "Deleted"}, status=status.HTTP_204_NO_CONTENT)
+        
+    
