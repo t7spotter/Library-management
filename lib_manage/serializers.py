@@ -22,4 +22,10 @@ class BorrowedBookSerializers(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
         
+
+class ReturnBookSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ReturnBook
+        fields = '__all__'
+        depth = 2
         
