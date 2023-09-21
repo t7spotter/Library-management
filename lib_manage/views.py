@@ -74,4 +74,14 @@ class GetPostBook(APIView):
         else:
             query.delete()
             return Response({"message" : "Deleted"}, status=status.HTTP_204_NO_CONTENT)
+        
+    def put(self, request: Request, pk):
+        try:
+            query = Book.objects.get(pk=pk)
+            ser = BookSerializers(query, data=request.data)
+        except Book.DoesNotExist:
+            return Response({"message" : "Can not find this item"}, status=status.HTTP_404_NOT_FOUND)
+        if ser.is_valid:
+            ser.save()
+            return Response(ser.data, status=status.HTTP_200_OK)
             
