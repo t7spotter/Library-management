@@ -145,3 +145,8 @@ class ReturnBook(APIView):
             return Response(ser.data, status=status.HTTP_200_OK)
         else:
             return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get(self, request: Request):
+        query = ReturnBook.objects.all()
+        ser = ReturnBookSerializers(query, many=True)
+        return Response(ser.data, status=status.HTTP_200_OK)
