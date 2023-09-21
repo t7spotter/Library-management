@@ -29,3 +29,8 @@ class ReturnBookSerializers(serializers.ModelSerializer):
         fields = '__all__'
         depth = 2
         
+
+class ContainSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['title', 'number_of_available']
