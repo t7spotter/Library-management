@@ -84,4 +84,32 @@ class GetPostBook(APIView):
         if ser.is_valid:
             ser.save()
             return Response(ser.data, status=status.HTTP_200_OK)
+
+
+class BorrowBook(APIView):
+    def post(self, request: Request):
+        person_name = request.data.get('person')
+        book_title = request.data.get('book')
+        
+        if not request.data:
+            return Response({"message" : "Please send valid request"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            try:
+                person = Person.objects.get(name=person_name)
+            except Person.DoesNotExist:
+                return Response({"message" : "There is no person with this name"}, status=status.HTTP_404_NOT_FOUND)
             
+            try:
+                book = Book.objects.get(title=book_title)
+            except Book.DoesNotExist:
+                Response({"message" : "There is no book with this title"}, status=status.HTTP_404_NOT_FOUND)
+            
+            if person.balance < 0:
+                return Response({"message" : "Your balance is negative, please charge your balance and try again."}, status=status.HTTP_403_FORBIDDEN)
+            elif book.number_of_available == 0:
+                return Response ({"message" : "This book is borrowed by another user."}, status=status.HTTP_403_FORBIDDEN)
+            else:
+                borrowed_book = BorrowedBook.objects.create(book=book, person=person)
+                book.number_of_available -= 1
+                borrowed_book.save()
+                return Response({"message" : "Book borrowed successfully"}, status=status.HTTP_200_OK)
