@@ -9,4 +9,6 @@ urlpatterns = [
     
     path('get-post-book', views.GetPostBook.as_view()),
     path('get-post-book/<int:pk>', views.GetPostBook.as_view()),
+    
+    path('borrow', views.BorrowBook.as_view()),
 ]
