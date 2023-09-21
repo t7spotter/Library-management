@@ -118,4 +118,30 @@ class BorrowBook(APIView):
         query = BorrowedBook.objects.all()
         ser = BorrowedBookSerializers(query, many=True)
         return Response(ser.data, status=status.HTTP_200_OK)
-    
+
+
+class ReturnBook(APIView):
+    def post(self, request: Request):
+        ser = ReturnBookSerializers(data=request.data)
+        if ser.is_valid():
+            borrowed_book_id = request.data.get('borrowed_book')
+            borrowed_book = BorrowedBook.objects.get(id=borrowed_book_id)
+            ser.save(borrowed_book=borrowed_book)
+            
+            #####################################
+            borrowed_book.actual_return_date = timezone.now()
+            borrowed_book.is_returned = True
+            borrowed_book.calculate_penalty()
+            borrowed_book.save()
+            
+            #returning the returned book to the storehouse (Book model):
+            returned_book = ReturnBook.objects.get(id=ser.data.get('id'))
+            borrowed_book = BorrowedBook.objects.get(id=returned_book.borrowed_book_id)
+            book = Book.objects.get(id=borrowed_book.book_id)
+
+            book.number_of_available += 1
+            book.save()
+            
+            return Response(ser.data, status=status.HTTP_200_OK)
+        else:
+            return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
