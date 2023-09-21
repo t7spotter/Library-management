@@ -44,3 +44,11 @@ class BorrowedBook(models.Model):
             self.person.balance -= penalty_amount
             self.person.save()
     
+
+class ReturnBook(models.Model):
+    borrowed_book = models.OneToOneField('BorrowedBook', on_delete=models.CASCADE)
+    return_date = models.DateTimeField(default=timezone.now())
+    
+    def __str__(self):
+        return self.borrowed_book
+    
