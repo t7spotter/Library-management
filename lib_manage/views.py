@@ -150,3 +150,14 @@ class ReturnBook(APIView):
         query = ReturnBook.objects.all()
         ser = ReturnBookSerializers(query, many=True)
         return Response(ser.data, status=status.HTTP_200_OK)
+    
+
+class ContainSearch(APIView):
+    def post(self, request: Request):
+        search_term = request.data.get('title')
+        if search_term: #!= '':
+            books = Book.objects.filter(title__contains=search_term)
+            ser = ContainSearchSerializer(books, many=True)
+            return Response(ser.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message':'Please provide a search term.'}, status=status.HTTP_400_BAD_REQUEST)

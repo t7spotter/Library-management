@@ -14,4 +14,5 @@ urlpatterns = [
     
     path('return', views.ReturnBook.as_view()),
     
+    path('search', views.ContainSearch.as_view()),
 ]
