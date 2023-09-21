@@ -57,3 +57,12 @@ class GetPostBook(APIView):
             query = Book.objects.all()
             ser = BookSerializers(query, many=True)
             return Response(ser.data, status=status.HTTP_200_OK)
+        
+    def post(self, request: Request):
+        ser = BookSerializers(data=request.data)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(ser.errors, status=status.HTTP_400_BAD_REQUEST)
+            
