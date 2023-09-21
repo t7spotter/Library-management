@@ -45,3 +45,15 @@ class GetPostPerson(APIView):
         if ser.is_valid:
             ser.save()
             return Response(ser.data, status=status.HTTP_200_OK)
+        
+        
+class GetPostBook(APIView):
+    def get(self, request: Request, pk=None):
+        if pk:
+            query = Book.objects.get(pk=pk)
+            ser = BookSerializers(query)
+            return Response(ser.data, status=status.HTTP_200_OK)
+        else:
+            query = Book.objects.all()
+            ser = BookSerializers(query, many=True)
+            return Response(ser.data, status=status.HTTP_200_OK)
