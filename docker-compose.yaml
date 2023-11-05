@@ -1,10 +1,36 @@
 version: '3.3'
 
 services:
+  db:
+    container_name: "lib_postgres"
+    restart: always
+    image: postgres:14.4
+    environment:
+      POSTGRES_USER: "lib_postgres"
+      POSTGRES_PASSWORD: "lib_postgres"
+      POSTGRES_DB: "lib_postgres"
+    volumes:
+      - lib_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "7070:5432"
+
   web:
-    build: .
+    container_name: lib
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    environment:
+      BACKEND_POSTGRES_HOST: "db"
+      BACKEND_POSTGRES_PORT: "5432"
     command:  python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
-      - 8000:8000
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  lib_postgres_data:
+    external: true
