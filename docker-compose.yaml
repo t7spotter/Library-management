@@ -12,7 +12,7 @@ services:
     volumes:
       - lib_postgres_data:/var/lib/postgresql/data
     ports:
-      - "7070:5432"
+      - "5432:5432"
 
   web:
     container_name: lib
